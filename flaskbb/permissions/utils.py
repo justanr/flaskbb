@@ -54,17 +54,20 @@ class PermissionManager(Mapping):
 
         def update_base(bag):
             for p in bag:
-                base[p.permission.name] = p.value
+                base[p.permission.name].append(p.value)
 
         update_base(self._user.permissions_)
-        update_base(chain(g.permissions_ for g in self._user.groups))
+        update_base(chain.from_iterable(g.permissions_ for g in self._user.groups))
 
         if self._category:
             update_base(self._category.permissions_)
 
         if self._forum:
             update_base(self._forum.permissions_)
+
         end_result = {}
+
+
 
         for (name, values) in base.items():
             end_result[name] = bool(sorted(values)[-1])
