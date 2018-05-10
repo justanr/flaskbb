@@ -65,11 +65,6 @@ class PermissionManager(Mapping):
         if self._forum:
             update_base(self._forum.permissions_)
 
-        end_result = {}
-
-
-
-        for (name, values) in base.items():
-            end_result[name] = bool(sorted(values)[-1])
-
-        return ImmutableDict(end_result)
+        return ImmutableDict(
+            {name: sorted(values)[-1] for name, values in base.items()}
+        )
