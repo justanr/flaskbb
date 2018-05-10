@@ -8,19 +8,28 @@
     :copyright: (c) 2014 by the FlaskBB Team.
     :license: BSD, see LICENSE for more details.
 """
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 from flask import abort, current_app, url_for
 from sqlalchemy.orm import aliased
 
 from flaskbb.extensions import db
-from flaskbb.utils.database import (CRUDMixin, HideableCRUDMixin, UTCDateTime,
-                                    make_comparable)
-from flaskbb.utils.helpers import (get_categories_and_forums, get_forums,
-                                   slugify, time_utcnow, topic_is_unread)
+from flaskbb.utils.database import (
+    CRUDMixin,
+    HasPermissions,
+    HideableCRUDMixin,
+    UTCDateTime,
+    make_comparable,
+)
+from flaskbb.utils.helpers import (
+    get_categories_and_forums,
+    get_forums,
+    slugify,
+    time_utcnow,
+    topic_is_unread,
+)
 from flaskbb.utils.settings import flaskbb_config
-
 
 logger = logging.getLogger(__name__)
 
@@ -811,7 +820,7 @@ class Topic(HideableCRUDMixin, db.Model):
 
 
 @make_comparable
-class Forum(db.Model, CRUDMixin):
+class Forum(db.Model, CRUDMixin, HasPermissions):
     __tablename__ = "forums"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -1141,7 +1150,7 @@ class Forum(db.Model, CRUDMixin):
 
 
 @make_comparable
-class Category(db.Model, CRUDMixin):
+class Category(db.Model, CRUDMixin, HasPermissions):
     __tablename__ = "categories"
 
     id = db.Column(db.Integer, primary_key=True)

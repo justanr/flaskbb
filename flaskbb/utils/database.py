@@ -14,9 +14,14 @@ from flask_login import current_user
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy.ext.declarative import declared_attr
 from flaskbb.extensions import db
+from flaskbb.permissions.levels import PermissionLevel
 
 
 logger = logging.getLogger(__name__)
+
+
+def primary_key(type=db.Integer):
+    return db.Column(type, primary_key=True, nullable=False)
 
 
 def make_comparable(cls):
@@ -150,3 +155,45 @@ class HideableMixin(object):
 
 class HideableCRUDMixin(HideableMixin, CRUDMixin):
     pass
+
+
+class PermissionBase(object):
+    id = primary_key()
+    value = db.Column(
+        db.Enum(PermissionLevel),
+        default=PermissionLevel.Undefined,
+        nullable=False
+    )
+
+    @declared_attr
+    def permission_id(cls):
+        return db.Column(db.ForeignKey('permissions.id'), nullable=False)
+
+    @declared_attr
+    def permission(cls):
+        return db.relationship('Permission', uselist=False, lazy='joined')
+
+
+class HasPermissions(object):
+
+    @declared_attr
+    def permissions_(cls):
+        perms_name = "{}Permission".format(cls.__name__)
+        table_name = "{}_permissions".format(cls.__tablename__)
+        parent_id = db.Column(
+            db.ForeignKey("{}.id".format(cls.__tablename__)),
+            nullable=False
+        )
+
+        def repr(self):
+            return "<{}Permission {} value={}>".format(
+                cls.__name__, self.permission.name, self.value
+            )
+
+        cls.Permission = type(
+            perms_name, (PermissionBase, db.Model),
+            {'parent_id': parent_id,
+             '__tablename__': table_name,
+             '__repr__': repr}
+        )
+        return db.relationship(cls.Permission, backref='parent', lazy="joined")

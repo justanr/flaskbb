@@ -9,16 +9,22 @@
     :license: BSD, see LICENSE for more details.
 """
 import logging
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask import url_for
-from flask_login import UserMixin, AnonymousUserMixin
 
-from flaskbb.extensions import db, cache
+from flask import url_for
+from flask_login import AnonymousUserMixin, UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from flaskbb.exceptions import AuthenticationError
+from flaskbb.extensions import cache, db
+from flaskbb.forum.models import Forum, Post, Topic, topictracker
+from flaskbb.utils.database import (
+    CRUDMixin,
+    HasPermissions,
+    UTCDateTime,
+    make_comparable,
+)
 from flaskbb.utils.helpers import time_utcnow
 from flaskbb.utils.settings import flaskbb_config
-from flaskbb.utils.database import CRUDMixin, UTCDateTime, make_comparable
-from flaskbb.forum.models import Post, Topic, Forum, topictracker
 
 
 logger = logging.getLogger(__name__)
@@ -36,7 +42,7 @@ groups_users = db.Table(
 
 
 @make_comparable
-class Group(db.Model, CRUDMixin):
+class Group(db.Model, CRUDMixin, HasPermissions):
     __tablename__ = "groups"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -89,7 +95,7 @@ class Group(db.Model, CRUDMixin):
                                 cls.banned == False).first()
 
 
-class User(db.Model, UserMixin, CRUDMixin):
+class User(db.Model, UserMixin, CRUDMixin, HasPermissions):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)

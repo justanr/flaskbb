@@ -33,6 +33,7 @@ from flaskbb.plugins.models import PluginRegistry
 from flaskbb.plugins.utils import remove_zombie_plugins_from_db, template_hook
 # models
 from flaskbb.user.models import Guest, User
+from flaskbb.permissions.models import Permission
 # various helpers
 from flaskbb.utils.helpers import (app_config_from_env, crop_title,
                                    format_date, forum_is_unread,
