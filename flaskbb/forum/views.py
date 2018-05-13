@@ -36,6 +36,7 @@ from flaskbb.utils.requirements import (CanAccessForum, CanAccessTopic,
                                         CanPostTopic, Has,
                                         IsAtleastModeratorInForum)
 from flaskbb.utils.settings import flaskbb_config
+from ..permissions.locals import current_permissions
 
 impl = HookimplMarker('flaskbb')
 

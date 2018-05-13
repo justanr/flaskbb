@@ -17,15 +17,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flaskbb.exceptions import AuthenticationError
 from flaskbb.extensions import cache, db
 from flaskbb.forum.models import Forum, Post, Topic, topictracker
-from flaskbb.utils.database import (
-    CRUDMixin,
-    HasPermissions,
-    UTCDateTime,
-    make_comparable,
-)
+from flaskbb.permissions.models import HasPermissions
+from flaskbb.utils.database import CRUDMixin, UTCDateTime, make_comparable
 from flaskbb.utils.helpers import time_utcnow
 from flaskbb.utils.settings import flaskbb_config
-
 
 logger = logging.getLogger(__name__)
 

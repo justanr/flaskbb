@@ -15,9 +15,9 @@ from flask import abort, current_app, url_for
 from sqlalchemy.orm import aliased
 
 from flaskbb.extensions import db
+from flaskbb.permissions.models import HasPermissions
 from flaskbb.utils.database import (
     CRUDMixin,
-    HasPermissions,
     HideableCRUDMixin,
     UTCDateTime,
     make_comparable,
