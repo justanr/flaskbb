@@ -12,7 +12,9 @@ and provided implementations where appropriate.
    coreexceptions
    models
    registration
+   userprofiles
    authentication
    accountmanagement
    tokens
    deprecations
+   display

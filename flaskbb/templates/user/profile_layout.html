@@ -1,3 +1,4 @@
+{%- from theme("macros.html") import sidebar with context -%}
 {% extends theme("layout.html") %}
 {% block content %}
 
@@ -44,33 +45,15 @@
                             {{ run_hook("flaskbb_tpl_profile_sidebar_stats", user=user) }}
                         </div>
 
-                        {% block profile_navigation %}
-                        <ul class="nav profile-sidenav" id="profile-tabs" role="tablist">
-                            <li class="active">
-                                <a href="{{ user.url }}#overview" role="tab" data-toggle="tab">
-                                    <span class="fa fa-home"></span> {% trans %}Overview{% endtrans %}
-                                </a>
-                            </li>
-                            {#
-                            <li>
-                                <a href="{{ user.url }}#info" role="tab" data-toggle="tab">
-                                    <span class="fa fa-line-chart"></span> {% trans %}Statistics{% endtrans %}
-                                </a>
-                            </li>
-                            #}
-                            <li>
-                                <a href="{{ url_for('user.view_all_topics', username=user.username) }}">
-                                    <span class="fa fa-comments"></span> {% trans %}Topics{% endtrans %}
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="{{ url_for('user.view_all_posts', username=user.username) }}">
-                                    <span class="fa fa-comment"></span> {% trans %}Posts{% endtrans %}
-                                </a>
-                            </li>
-                        </ul>
-                        {% endblock %}
+                    {{ sidebar(
+                        run_hook(
+                            "flaskbb_tpl_profile_sidebar_links",
+                            user=user,
+                            is_markup=False
+                            ),
+                            extra_class="profile-sidebar"
+                        )
+                    }}
                     </div>
                     {% endblock %}
 

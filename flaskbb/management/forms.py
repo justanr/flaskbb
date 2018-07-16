@@ -11,7 +11,7 @@
 import logging
 from flask_wtf import FlaskForm
 from wtforms import (BooleanField, HiddenField, IntegerField, PasswordField,
-                     SelectField, StringField, SubmitField, TextAreaField)
+                     StringField, SubmitField, TextAreaField)
 from wtforms.validators import (DataRequired, Optional, Email, regexp, Length,
                                 URL, ValidationError)
 from wtforms.ext.sqlalchemy.fields import (QuerySelectField,
@@ -66,10 +66,7 @@ class UserForm(FlaskForm):
     birthday = BirthdayField(_("Birthday"), format="%d %m %Y", validators=[
         Optional()])
 
-    gender = SelectField(_("Gender"), default="None", choices=[
-        ("None", ""),
-        ("Male", _("Male")),
-        ("Female", _("Female"))])
+    gender = StringField(_("Gender"), validators=[Optional()])
 
     location = StringField(_("Location"), validators=[
         Optional()])
