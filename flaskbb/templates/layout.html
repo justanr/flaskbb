@@ -1,3 +1,4 @@
+{%- from theme("macros.html") import dropdown with context -%}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -83,53 +84,29 @@
                         <!-- navbar right -->
                         <ul class="nav navbar-nav navbar-right">
                             {% if current_user and current_user.is_authenticated %}
-
                             {{ run_hook("flaskbb_tpl_user_nav_loggedin_before") }}
+                            {% endif %}
 
                             <!-- User Menu -->
                             <li>
                                 <div class="btn-group navbar-btn user-btn">
+                                    {% if current_user and current_user.is_authenticated %}
                                     <a class="btn btn-primary" href="{{ url_for('user.profile', username=current_user.username) }}">
                                         <span class="fa fa-user fa-fw"></span> {{ current_user.username }}
                                     </a>
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li><a href="{{ url_for('forum.topictracker') }}"><span class="fa fa-book fa-fw"></span> {% trans %}Topic Tracker{% endtrans %}</a></li>
-                                        <li class="divider"></li>
-
-                                        <li><a href="{{ url_for('user.settings') }}"><span class="fa fa-cogs fa-fw"></span> {% trans %}Settings{% endtrans %}</a></li>
-                                        {% if current_user|is_admin_or_moderator %}
-                                        <li><a href="{{ url_for('management.overview') }}"><span class="fa fa-cog fa-fw"></span> {% trans %}Management{% endtrans %}</a></li>
-                                        <li class="divider"></li>
-                                        {% endif %}
-
-                                        <li><a href="{{ url_for('auth.logout') }}"><span class="fa fa-power-off fa-fw"></span> {% trans %}Logout{% endtrans %}</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-
-                            {{ run_hook("flaskbb_tpl_user_nav_loggedin_after") }}
-
-                            {% else %}
-                            <!-- Not logged in - Login/Register -->
-                            <li>
-                                <div class="btn-group navbar-btn user-btn">
+                                    {% else %}
                                     <a class="btn btn-primary" href="{{ url_for('auth.login') }}">
                                         <span class="fa fa-user fa-fw"></span> {% trans %}Login{% endtrans %}
                                     </a>
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        {# MAYBE(anr): Move this into a hook?? #}
-                                        {% if flaskbb_config["REGISTRATION_ENABLED"] %}
-                                        <li><a href="{{ url_for('auth.register') }}"><span class="fa fa-user-plus fa-fw"></span> {% trans %}Register{% endtrans %}</a></li>
-                                        {% endif %}
-                                        <li><a href="{{ url_for('auth.forgot_password') }}"><span class="fa fa-undo fa-fw"></span> {% trans %}Reset Password{% endtrans %}</a></li>
-                                        {% if flaskbb_config["ACTIVATE_ACCOUNT"] %}
-                                        <li><a href="{{ url_for('auth.request_activation_token') }}"><span class="fa fa-fw fa-ticket"></span> {% trans %}Activate Account{% endtrans %}</a></li>
-                                        {% endif %}
-                                    </ul>
+                                    {% endif %}
+
+                                    {{ dropdown(run_hook("flaskbb_tpl_user_nav_menu", user=current_user, is_markup=False)) }}
+
                                 </div>
                             </li>
+
+                            {% if current_user and current_user.is_authenticated %}
+                            {{ run_hook("flaskbb_tpl_user_nav_loggedin_after") }}
                             {% endif %}
 
                         </ul> <!-- end navbar right -->

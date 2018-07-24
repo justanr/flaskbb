@@ -330,8 +330,8 @@
 {{ navtext(text, icon, cls) }}
 {% endmacro %}
 
-{% macro navdivider() %}
-<li class="nav-divider"></li>
+{% macro navdivider(cls="nav-divider") %}
+<li class="{{ cls }}"></li>
 {% endmacro %}
 
 {% macro sidebar(items, extra_class="") %}
@@ -352,6 +352,27 @@
     {% endfor %}
 </ul>
 {% endif %}
+{% endmacro %}
+
+{% macro dropdown(items, dropdown_class="", button_class="btn btn-primary", icon="caret") %}
+<button type="button" class="{% if button_class %}{{button_class}} {% endif %}dropdown-toggle" data-toggle="dropdown">
+    <span class="{{ icon }}"></span>
+</button>
+<ul class="dropdown-menu {% if dropdown_class %}{{ dropdown_class }}{% endif %}" role="menu">
+    {% for item in items %}
+    {% if item.content_type == NavigationContentType.link %}
+    {{ navlink(item.endpoint, item.name, item.icon, item.active, item.urlforkwargs) }}
+    {% elif item.content_type == NavigationContentType.external_link %}
+    {{ externalnavlink(item.uri, item.name, item.icon) }}
+    {% elif item.content_type == NavigationContentType.text %}
+    {{ navtext(item.text) }}
+    {% elif item.content_type == NavigationContentType.header %}
+    {{ navheader(item.text, cls="dropdown-header") }}
+    {% else %}
+    {{ navdivider("divider") }}
+    {% endif %}
+    {% endfor %}
+</ul>
 {% endmacro %}
 
 {% macro tablink_href(endpoint, name, active=False) %}
